@@ -20,13 +20,13 @@ console.info(
 (window as any).customCards = (window as any).customCards || [];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).customCards.push({
-  type: 'weather-radar-card',
-  name: 'Weather Radar Card',
+  type: 'weather-radar-card-redux',
+  name: 'Weather Radar Card Redux',
   description: 'A rain radar card using the new tiled images from RainViewer',
 });
 
 // TODO Name your custom element
-@customElement('weather-radar-card')
+@customElement('weather-radar-card-redux')
 export class WeatherRadarCard extends LitElement implements LovelaceCard {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     return document.createElement('weather-radar-card-editor') as LovelaceCardEditor;

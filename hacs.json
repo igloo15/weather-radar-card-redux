@@ -1,5 +1,5 @@
 {
-  "name": "Weather Radar Card",
+  "name": "Weather Radar Card Redux",
   "render_readme": true,
   "filename": "weather-radar-card.js",
   "homeassistant": "2022.11.0"

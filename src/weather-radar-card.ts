@@ -114,6 +114,7 @@ export class WeatherRadarCard extends LitElement implements LovelaceCard {
             #color-bar {
               margin: 0px 0px;
             }
+            ${this._config.map_css? this._config.map_css : ''}
           </style>
         </head>
         <body onresize="resizeWindow()">
@@ -121,16 +122,7 @@ export class WeatherRadarCard extends LitElement implements LovelaceCard {
             <div id="color-bar" style="height: 8px;">
               <img id="img-color-bar" height="8" style="vertical-align: top" />
             </div>
-            <div id="mapid" style="height: ${this.isPanel
-        ? this.offsetParent
-          ? this.offsetParent.clientHeight - 48 - 2 - (this.editMode === true ? 59 : 0) + `px`
-          : `540px`
-        : this._config.square_map !== undefined
-          ? this._config.square_map
-            ? this.getBoundingClientRect().width + 'px'
-            : '492px'
-          : '492px'
-      };"></div>
+            <div id="mapid" style="height: ${this.getMapHeightPixels()};"></div>
             <div id="div-progress-bar" style="height: 8px; background-color: white;">
               <div id="progress-bar" style="height:8px;width:0; background-color: #ccf2ff;"></div>
             </div>
@@ -589,16 +581,7 @@ export class WeatherRadarCard extends LitElement implements LovelaceCard {
           this.document.getElementById("color-bar").width = this.frameElement.offsetWidth;
           this.document.getElementById("img-color-bar").width = this.frameElement.offsetWidth;
           this.document.getElementById("mapid").width = this.frameElement.offsetWidth;
-          this.document.getElementById("mapid").height = ${this.isPanel
-        ? this.offsetParent
-          ? this.offsetParent.clientHeight - 48 - 2 - (this.editMode === true ? 59 : 0)
-          : 492
-        : this._config.square_map !== undefined
-          ? this._config.square_map
-            ? this.getBoundingClientRect().width
-            : 492
-          : 492
-      }
+          this.document.getElementById("mapid").height = ${this.getMapHeight()};
           this.document.getElementById("div-progress-bar").width = this.frameElement.offsetWidth;
           this.document.getElementById("bottom-container").width = this.frameElement.offsetWidth;
           barSize = this.frameElement.offsetWidth/frameCount;
@@ -609,15 +592,7 @@ export class WeatherRadarCard extends LitElement implements LovelaceCard {
       </html>
     `;
 
-    const padding = this.isPanel
-      ? this.offsetParent
-        ? this.offsetParent.clientHeight - 2 - (this.editMode === true ? 59 : 0) + `px`
-        : `540px`
-      : this._config.square_map !== undefined
-        ? this._config.square_map
-          ? `${this.getBoundingClientRect().width + 48}px`
-          : `540px`
-        : `540px`;
+    const padding = this.getMapPaddingPixels();
 
     const cardTitle = this._config.card_title !== undefined ? html`<div id="card-title">${this._config.card_title}</div>` : ``;
 
@@ -632,6 +607,29 @@ export class WeatherRadarCard extends LitElement implements LovelaceCard {
         </div>
       </ha-card>
     `;
+  }
+
+  private getMapHeight(standardHeight: number = 492): number {
+    let height = standardHeight;
+    if(this.isPanel) {
+      if(this.offsetParent) {
+        height = this.offsetParent.clientHeight - 48 - 2 - (this.editMode === true ? 59 : 0)
+      }
+    } else if(this._config.square_map !== undefined) {
+      if (this._config.square_map) {
+        height = this.getBoundingClientRect().width;
+      }
+    }
+
+    return height;
+  }
+
+  private getMapHeightPixels(standardHeight: number = 492): string {
+    return `${this.getMapHeight(standardHeight)}px`;
+  }
+
+  private getMapPaddingPixels(standardPadding: number = 540) {
+    return this.getMapHeightPixels(standardPadding);
   }
 
   private showWarning(warning: string): TemplateResult {
